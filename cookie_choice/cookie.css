@@ -1,0 +1,73 @@
+html, body {
+			height: 100%;
+			width: 100%;
+		}
+		.cookie {
+			overflow: hidden;
+			position: absolute;
+			left: 42%;
+			z-index: -100;
+			top: 45%;
+			width: 100px;
+		}
+		.leftCookie {
+			position: absolute;
+			left: 11%;
+			bottom: 23%;
+			z-index: -1;
+		}
+		.rightCookie {
+			position: absolute;
+			right: 11%;
+			bottom: 23%;
+			z-index: -1;
+		}
+		.cookies {
+			overflow: hidden;
+			position: absolute;
+			left: 35%;
+			z-index: -99;
+			top: 45%;
+		}
+		.bucket {
+			position:absolute;
+			bottom: 100px;
+		}
+		.bucketTop {
+			position:absolute;
+			z-index: -101;
+			bottom: 322px;
+		}
+		#rightTop {
+			right: 5%;
+		}
+		#leftTop {
+			left: 5%;
+		}
+		#rightB {
+			right: 5%;
+		}
+		#leftB {
+			left: 5%;
+		}
+		.slide {
+			display: none;
+			/*position: absolute;*/
+		}
+		#instructions {
+  			text-align: center;
+  			left: 30%;
+		}
+		.plate {
+			position:absolute;
+			z-index: -102;
+			width: 250px;
+			bottom: 200px;
+		}
+		#plateLeft {
+			left: 5%;
+		}
+		#plateRight {
+			right: 5%;
+		}
+		
