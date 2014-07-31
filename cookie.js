@@ -5,7 +5,7 @@ function showSlide(id) {
 }
 
 getCurrentDate = function() {
-	var currentDate = new Date();
+  var currentDate = new Date();
 	var day = currentDate.getDate();
 	var month = currentDate.getMonth() + 1;
 	var year = currentDate.getFullYear();
@@ -63,6 +63,17 @@ var experiment = {
 
 	task: "",
 
+	//Warm up variables
+	initialPlate: "",
+
+	morePlate: "",
+
+	plateChoice: "",
+
+
+
+	//Experimental task variables
+	//first bucket
 	initialBucket: "",
 
 	moreBucket: "",
@@ -80,7 +91,7 @@ var experiment = {
 	preStudy: function() {
 		//document.body.style.background = "black";
 		$("#prestudy").hide();
-		experiment.lessVsMore(true,0,1,800);
+		experiment.lessVsMore(true,3,3,200);
 	},
 
 	training: function(dotgame) {
@@ -121,7 +132,7 @@ var experiment = {
 					} else {
 						//document.body.style.background = "black";
 						setTimeout(function() {
-							experiment.lessVsMore(false,2,3,400);
+							experiment.lessVsMore(true,1,2,800);
 						}, 1000);
 					}
 				}, 1000);
@@ -145,7 +156,7 @@ var experiment = {
 		experiment.order = parseInt(document.getElementById("order").value);
 		
 		showSlide("prestudy");
-		experiment.training(1);			
+		//experiment.training(1);			
 	},
 
 	processOneRow: function() {
@@ -155,65 +166,70 @@ var experiment = {
 		$.post("http://langcog.stanford.edu/cgi-bin/Cookie/cookie.php", {postresult_string : dataforRound});	
 	},
 
-	moreWarmUp: function(numCookies, direction, speed) {
-		showSlide("warmUp");
-		var moveAwayPercent = direction == 'left' ? '10%' : '78%';
-		for (var i = 0; i < numCookies; i++) {
-			// The code needs access to the index it's on, so wrap in a closure
-			var cookie = document.createElement("img");
-			cookie.setAttribute("id", "cookie" + parseInt(i + 1));
-			cookie.setAttribute("class", direction + "Cookie");
-			cookie.setAttribute("style", "width: 100px");
-			cookie.src="CookiePictures/CCC.png";
-			warmUp.appendChild(cookie);
+	moreRecurse: function(show, numLeft, direction, speed, left, right) {
+		var moveAwayPercent = direction == 'left' ? parseInt(left) + 'px' : parseInt(right) + 'px';
+		for (var i = 0; i < 1; i++) {
 			(function(index) {
-				$('#cookie' + parseInt(i + 1)).animate({'top': '10%'}, {duration: speed}, speed);
-				$('#cookie' + parseInt(i + 1)).animate({'left': moveAwayPercent}, {duration: speed}, speed);				
-				$('#cookie' + parseInt(i + 1)).animate({'top': '50%'}, {duration: speed,
+				$('#cookie' + direction + parseInt(numLeft)).animate({'top': '10%'}, {duration: speed}, speed);
+				$('#cookie' + direction + parseInt(numLeft)).animate({'left': moveAwayPercent}, {duration: speed}, speed);				
+				$('#cookie' + direction + parseInt(numLeft)).animate({'top': '53%'}, {duration: speed,
 					complete: function() {
 						// We don't want the cookie to reappear on the last animation
-						if (index != numCookies) {
+						if (!show) {
 							$(this).removeAttr('style'); // Remove style jquery added
 						}
 					}
 				}, speed);				
-			})(i);					
+			})(i);
 		}
+		if (numLeft > 1) setTimeout(function() {experiment.moreRecurse(show, (numLeft - 1), direction, speed, 
+			left + 65, right + 65);}, (3 * speed));
 	},
 
 	moveCookies: function(show, numCookies, direction, speed) {
-		var moveAwayPercent = direction == 'left' ? '10%' : '78%';
+		//end pile
+		var cookie = document.createElement("img");
+		cookie.setAttribute("id", "cookiePile" + parseInt(numCookies));
+		cookie.setAttribute("class", direction + "Cookie");
+		cookie.setAttribute("style", "width: 100px");
+		if (numCookies == 1) {
+			cookie.src="CookiePictures/CCC.png";
+		} else if (numCookies == 2) {
+			cookie.src = "CookiePictures/twoCookies.png";
+		} else if (numCookies == 3) {
+			cookie.src="CookiePictures/threeCookies.png";
+		} else if (numCookies == 4) {
+			cookie.src="CookiePictures/fourCookies";
+		}
+		if(!show) {
+			mainexpt.appendChild(cookie);
+		}
 		for (var i = 0; i < numCookies; i++) {
+			//moving cookies
 			var cookie = document.createElement("img");
-			cookie.setAttribute("id", "cookie" + parseInt(i + 1));
-			cookie.setAttribute("class", direction + "Cookie");
-			cookie.setAttribute("style", "width: 100px");
-			if (numCookies == 1) {
-				cookie.src="CookiePictures/CCC.png";
-			} else if (numCookies == 2) {
-				cookie.src = "CookiePictures/twoCookies.png";
-			} else if (numCookies == 3) {
-				cookie.src="CookiePictures/threeCookies.png";
-			} else if (numCookies == 4) {
-				cookie.src="CookiePictures/fourCookies";
-			}
-			if(!show) {
+			cookie.setAttribute("id", "cookie" + direction + parseInt(i + 1));
+			cookie.setAttribute("class", "cookie");
+			cookie.src="CookiePictures/CCC.png"
+			cookie.setAttribute("style", "width: 75px");
+			if (show) {
+				warmUp.appendChild(cookie);
+			} else {
 				mainexpt.appendChild(cookie);
 			}
-			// The code needs access to the index it's on, so wrap in a closure
-			(function(index) {
-				$('#cookie').animate({'top': '10%'}, {duration: speed}, speed);
-				$('#cookie').animate({'left': moveAwayPercent}, {duration: speed}, speed);				
-				$('#cookie').animate({'top': '50%'}, {duration: speed,
-					complete: function() {
-						// We don't want the cookie to reappear on the last animation
-						if (index != numCookies) {
-							$('#cookie').removeAttr('style'); // Remove style jquery added
-						}
-					}
-				}, speed);				
-			})(i);					
 		}
+
+		var left, right;
+		if (numCookies == 3) {
+			left = 82;
+			right = 850;
+		} else if (numCookies == 2) {
+			left = 117;
+			right = 877;
+		} else if (numCookies == 1) {
+			left = 147;
+			right = 910;
+		}
+		experiment.moreRecurse(show, numCookies, direction, speed, left, right);					
 	},
 
 	lessVsMore: function(show, less, more, speed) {
@@ -222,7 +238,7 @@ var experiment = {
 		} else {
 			showSlide("mainexpt");
 		}	
-		var clickDisabled = true;
+		var clickDisabled = false;
 		experiment.task = parseInt(less) + "vs" + parseInt(more);
 
 		var x = Math.floor(Math.random()*100);
@@ -232,22 +248,22 @@ var experiment = {
 			if (y < 50) {
 				experiment.moreBucket = "rightB";
 				experiment.moveCookies(show, less, 'left', speed);
-				experiment.moveCookies(show, more, 'right', speed);
+				setTimeout(function() {experiment.moveCookies(show, more, 'right', speed);}, (3 * speed * less));
 			} else {
 				experiment.moreBucket = "leftB";
 				experiment.moveCookies(show, more, 'left', speed);
-				experiment.moveCookies(show, less, 'right', speed);
+				setTimeout(function() {experiment.moveCookies(show, less, 'right', speed);}, (3 * speed * more));
 			}			
 		} else {
 			experiment.initialBucket = "rightB";
 			if (y < 50) {
 				experiment.moreBucket = "leftB";
 				experiment.moveCookies(show, less, 'right', speed);
-				experiment.moveCookies(show, more, 'left', speed);
+				setTimeout(function() {experiment.moveCookies(show, more, 'left', speed);}, (3 * speed * less));
 			} else {
 				experiment.moreBucket = "rightB";
 				experiment.moveCookies(show, more, 'right', speed);
-				experiment.moveCookies(show, less, 'left', speed);
+				setTimeout(function() {experiment.moveCookies(show, less, 'left', speed);}, (3 * speed * more));
 			}
 		}
 
@@ -258,14 +274,24 @@ var experiment = {
 
 		if (show) {
 			$('.plate').bind('click touchstart', function(event) {		
+				$('.plate').fadeOut();
 				if(clickDisabled) return;	
 				clickDisabled = true;
 				experiment.clickTime = (new Date()).getTime();
 				var choice = $(event.currentTarget).attr('id');
 				experiment.userChoice = choice;
-				$('#' + choice).fadeOut(800);
-				setTimeout(function() {experiment.lessVsMore(false, 1, 2, 800);}, 800);
+				$('.cookie').fadeOut();
+				//setTimeout(function() {experiment.lessVsMore(false, 1, 2, 800);}, 800);
 
+			});
+			$('.cookie').bind('click touchstart', function(event) {		
+				if(clickDisabled) return;	
+				clickDisabled = true;
+				experiment.clickTime = (new Date()).getTime();
+				var choice = $(event.currentTarget).attr('id');
+				experiment.userChoice = choice;
+				$('.cookie').fadeOut();
+				//setTimeout(function() {experiment.lessVsMore(false, 1, 2, 800);}, 800);
 			});
 		} else {
 			$('.right').bind('click touchstart', function(event) {		
