@@ -6,7 +6,7 @@ html, body {
 			overflow: hidden;
 			position: absolute;
 			left: 42%;
-			z-index: -100;
+			z-index: 2;
 			top: 45%;
 			width: 100px;
 		}
@@ -14,28 +14,29 @@ html, body {
 			position: absolute;
 			left: 11%;
 			bottom: 23%;
-			z-index: -1;
+			z-index: 2;
 		}
 		.rightCookie {
 			position: absolute;
 			right: 11%;
 			bottom: 23%;
-			z-index: -1;
+			z-index: 2;
 		}
 		.cookies {
 			overflow: hidden;
 			position: absolute;
 			left: 35%;
-			z-index: -99;
+			z-index: 3;
 			top: 45%;
 		}
 		.bucket {
 			position:absolute;
 			bottom: 100px;
+			z-index: 3
 		}
 		.bucketTop {
 			position:absolute;
-			z-index: -101;
+			z-index: 1;
 			bottom: 322px;
 		}
 		#rightTop {
@@ -60,7 +61,7 @@ html, body {
 		}
 		.plate {
 			position:absolute;
-			z-index: -102;
+			z-index: 1;
 			width: 250px;
 			bottom: 200px;
 		}
