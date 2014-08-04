@@ -8,7 +8,7 @@ html, body {
 			left: 42%;
 			z-index: 2;
 			top: 45%;
-			width: 100px;
+			width: 75px;
 		}
 		.leftCookie {
 			position: absolute;
@@ -22,12 +22,13 @@ html, body {
 			bottom: 23%;
 			z-index: 2;
 		}
-		.cookies {
+		#cookies {
 			overflow: hidden;
 			position: absolute;
 			left: 35%;
 			z-index: 3;
-			top: 45%;
+			bottom: 50px;
+			width: 350px;
 		}
 		.bucket {
 			position:absolute;
@@ -63,7 +64,7 @@ html, body {
 			position:absolute;
 			z-index: 1;
 			width: 250px;
-			bottom: 200px;
+			bottom: 180px;
 		}
 		#plateLeft {
 			left: 5%;

@@ -91,9 +91,15 @@ var experiment = {
 	preStudy: function() {
 		//document.body.style.background = "black";
 		$("#prestudy").hide();
-		experiment.lessVsMore(true,3,3,200);
+		showSlide("warmUp");
+		experiment.lessVsMore(true,2,3,200,3);
 	},
-	
+
+	mainTrials: function() {
+		$("#transition").hide();
+		showSlide("mainexpt");
+		experiment.lessVsMore(false,0,1,200,3);
+	},
 
 	training: function(dotgame) {
 		var monsters = ["monster1", "monster2", "monster3", "monster4", "monster5"];
@@ -133,8 +139,8 @@ var experiment = {
 					} else {
 						//document.body.style.background = "black";
 						setTimeout(function() {
-							experiment.lessVsMore(true,1,1,800);
-						}, 1000);
+							experiment.preStudy();
+						}, 500);
 					}
 				}, 1000);
 			}
@@ -187,22 +193,35 @@ var experiment = {
 			left + 65, right + 65);}, (3 * speed));
 	},
 
-	moveCookies: function(show, numCookies, direction, speed) {
-		//end pile
-		var cookie = document.createElement("img");
-		cookie.setAttribute("id", "cookiePile" + parseInt(numCookies));
-		cookie.setAttribute("class", direction + "Cookie");
-		cookie.setAttribute("style", "width: 100px");
-		if (numCookies == 1) {
-			cookie.src="CookiePictures/CCC.png";
-		} else if (numCookies == 2) {
-			cookie.src = "CookiePictures/twoCookies.png";
-		} else if (numCookies == 3) {
-			cookie.src="CookiePictures/threeCookies.png";
-		} else if (numCookies == 4) {
-			cookie.src="CookiePictures/fourCookies";
-		}
-		if(!show) {
+	setChildren : function(show, numCookies, direction) {
+		if (show) {
+			var pile = document.createElement("img");
+			pile.setAttribute("id", "cookies");
+			pile.src="CookiePictures/pile.png";
+			warmUp.appendChild(pile);
+			var plateL = document.createElement("img");
+			plateL.setAttribute("id", "plateLeft");
+			plateL.setAttribute("class", "plate");
+			plateL.src="CookiePictures/plate.png";
+			warmUp.appendChild(plateL);
+			var plateR = document.createElement("img");
+			plateR.setAttribute("id", "plateRight");
+			plateR.setAttribute("class", "plate");
+			plateR.src="CookiePictures/plate.png";
+			warmUp.appendChild(plateR);
+		} else {
+			var cookie = document.createElement("img");
+			cookie.setAttribute("id", "cookiePile" + parseInt(numCookies));
+			cookie.setAttribute("class", direction + "Cookie");
+			if (numCookies == 1) {
+				cookie.src="CookiePictures/CCC.png";
+			} else if (numCookies == 2) {
+				cookie.src = "CookiePictures/twoCookies.png";
+			} else if (numCookies == 3) {
+				cookie.src="CookiePictures/threeCookies.png";
+			} else if (numCookies == 4) {
+				cookie.src="CookiePictures/fourCookies";
+			}
 			mainexpt.appendChild(cookie);
 		}
 		for (var i = 0; i < numCookies; i++) {
@@ -210,30 +229,37 @@ var experiment = {
 			var cookie = document.createElement("img");
 			cookie.setAttribute("id", "cookie" + direction + parseInt(i + 1));
 			cookie.setAttribute("class", "cookie");
-			cookie.src="CookiePictures/CCC.png"
-			cookie.setAttribute("style", "width: 75px");
+			cookie.src="CookiePictures/CCC.png";
 			if (show) {
 				warmUp.appendChild(cookie);
 			} else {
 				mainexpt.appendChild(cookie);
 			}
 		}
+	},
 
+	moveCookies: function(show, numCookies, direction, speed) {
+		experiment.setChildren(show, numCookies, direction);
 		var left, right;
-		if (numCookies == 3) {
-			left = 82;
-			right = 850;
-		} else if (numCookies == 2) {
-			left = 117;
-			right = 877;
-		} else if (numCookies == 1) {
+		if (show) {
+			if (numCookies == 3) {
+				left = 82;
+				right = 850;
+			} else if (numCookies == 2) {
+				left = 117;
+				right = 877;
+			} else if (numCookies == 1) {
+				left = 147;
+				right = 910;
+			}
+		} else {
 			left = 147;
 			right = 910;
 		}
 		experiment.moreRecurse(show, numCookies, direction, speed, left, right);					
 	},
 
-	lessVsMore: function(show, less, more, speed) {
+	lessVsMore: function(show, less, more, speed, trial) {
 		if(show) {
 			showSlide("warmUp");
 		} else {
@@ -244,85 +270,72 @@ var experiment = {
 
 		var x = Math.floor(Math.random()*100);
 		var y = Math.floor(Math.random()*100);
+		experiment.firstMove = (new Date()).getTime();
+		experiment.startTime = (new Date()).getTime() + ((less + more) * 3 * speed);
+		//Allows clicks as soon as startTime occurs
+		//setTimeout(function() {clickDisabled = false;}, (less + more) * 3 * speed);
 		if (x < 50) {
 			experiment.initialBucket = "leftB";
 			if (y < 50) {
 				experiment.moreBucket = "rightB";
 				experiment.moveCookies(show, less, 'left', speed);
-				setTimeout(function() {experiment.moveCookies(show, more, 'right', speed);}, (3 * speed * less));
+				setTimeout(function() {experiment.moveCookies(show, more, 'right', speed); experiment.getClickData(show, false, trial);}, (3 * speed * less));
 			} else {
 				experiment.moreBucket = "leftB";
 				experiment.moveCookies(show, more, 'left', speed);
-				setTimeout(function() {experiment.moveCookies(show, less, 'right', speed);}, (3 * speed * more));
+				setTimeout(function() {experiment.moveCookies(show, less, 'right', speed); experiment.getClickData(show, false, trial);}, (3 * speed * more));
 			}			
 		} else {
 			experiment.initialBucket = "rightB";
 			if (y < 50) {
 				experiment.moreBucket = "leftB";
 				experiment.moveCookies(show, less, 'right', speed);
-				setTimeout(function() {experiment.moveCookies(show, more, 'left', speed);}, (3 * speed * less));
+				setTimeout(function() {experiment.moveCookies(show, more, 'left', speed); experiment.getClickData(show, false, trial);}, (3 * speed * less));
 			} else {
 				experiment.moreBucket = "rightB";
 				experiment.moveCookies(show, more, 'right', speed);
-				setTimeout(function() {experiment.moveCookies(show, less, 'left', speed);}, (3 * speed * more));
+				setTimeout(function() {experiment.moveCookies(show, less, 'left', speed); experiment.getClickData(show, false, trial);}, (3 * speed * more));		
 			}
-		}
-
-		experiment.firstMove = (new Date()).getTime();
-		experiment.startTime = (new Date()).getTime() + ((less + more) * 3 * speed);
-		//Allows clicks as soon as startTime occurs
-		setTimeout(function() {clickDisabled = false;}, (less + more) * 3 * speed);
-
-		if (show) {
-			$('.plate').bind('click touchstart', function(event) {		
-				if(clickDisabled) return;	
-				clickDisabled = true;
-				experiment.clickTime = (new Date()).getTime();
-				var choice = $(event.currentTarget).attr('id');
-				experiment.userChoice = choice;
-				$('.cookie').fadeOut();
-				$('.plate').fadeOut();
-				//setTimeout(function() {experiment.lessVsMore(false, 1, 2, 800);}, 800);
-
-			});
-			$('.cookie').bind('click touchstart', function(event) {		
-				if(clickDisabled) return;	
-				clickDisabled = true;
-				experiment.clickTime = (new Date()).getTime();
-				var choice = $(event.currentTarget).attr('id');
-				experiment.userChoice = choice;
-				$('.cookie').fadeOut();
-				$('.plate').fadeOut();
-				//setTimeout(function() {experiment.lessVsMore(false, 1, 2, 800);}, 800);
-			});
-		} else {
-			$('.right').bind('click touchstart', function(event) {		
-				if(clickDisabled) return;
-				clickDisabled = true;	
-				experiment.clickTime = (new Date()).getTime();
-				var choice = $(event.currentTarget).attr('id');
-				experiment.userChoice = choice;
-				//secondClass = $('#'+choice).attr('class').split(' ')[1];
-				$('.right').fadeOut();
-				$('.left').fadeOut();
-			});
-			$('.left').bind('click touchstart', function(event) {		
-				if(clickDisabled) return;
-				clickDisabled = true;	
-				experiment.clickTime = (new Date()).getTime();
-				var choice = $(event.currentTarget).attr('id');
-				experiment.userChoice = choice;
-				//secondClass = $('#'+choice).attr('class').split(' ')[1];
-				$('.right').fadeOut();
-				$('.left').fadeOut();
-			});
 		}	
 	},
 
-	cookieFunction : function(show, numCookies, direction, speed) {
-		for(var i = 0; i < numCookies; i++) {
-			experiment.moveCookies(show,1,direction,speed);
-		}	
+	getClickData : function(show, clickDisabled, trial) {
+		if (show) {
+			$('.plate' && '.cookie').bind('click touchstart', function(event) {		
+				if(clickDisabled) return;	
+				clickDisabled = true;
+				experiment.clickTime = (new Date()).getTime();
+				var choice = $(event.currentTarget).attr('id');
+				experiment.userChoice = choice;
+				$('.cookie').fadeOut(500);
+				if (trial > 1) {
+					setTimeout(function() {
+						while (warmUp.firstChild) {
+							warmUp.removeChild(warmUp.firstChild);
+						}
+						experiment.lessVsMore(true, 1, 2, 200,trial - 1);
+					}, 1000);
+				} else {
+					experiment.mainTrials();
+				}
+			});
+		} else {
+			$('.right' && '.left').bind('click touchstart', function(event) {		
+				if(clickDisabled) return;
+				clickDisabled = true;	
+				experiment.clickTime = (new Date()).getTime();
+				var choice = $(event.currentTarget).attr('id');
+				experiment.userChoice = choice;
+				//secondClass = $('#'+choice).attr('class').split(' ')[1];
+				$('.right').fadeOut(500);
+				$('.left').fadeOut(500);
+				if (trial > 1) {
+					setTimeout(function() {experiment.lessVsMore(false, 1, 2, 200,trial - 1);}, 1000);
+				} else {
+					experiment.end();
+				}
+			});
+		}
 	},
 
 	end: function () {
