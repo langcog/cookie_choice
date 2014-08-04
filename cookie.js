@@ -5,7 +5,7 @@ function showSlide(id) {
 }
 
 getCurrentDate = function() {
-  var currentDate = new Date();
+	var currentDate = new Date();
 	var day = currentDate.getDate();
 	var month = currentDate.getMonth() + 1;
 	var year = currentDate.getFullYear();
@@ -93,6 +93,7 @@ var experiment = {
 		$("#prestudy").hide();
 		experiment.lessVsMore(true,3,3,200);
 	},
+	
 
 	training: function(dotgame) {
 		var monsters = ["monster1", "monster2", "monster3", "monster4", "monster5"];
@@ -132,7 +133,7 @@ var experiment = {
 					} else {
 						//document.body.style.background = "black";
 						setTimeout(function() {
-							experiment.lessVsMore(true,1,2,800);
+							experiment.lessVsMore(true,1,1,800);
 						}, 1000);
 					}
 				}, 1000);
@@ -156,7 +157,7 @@ var experiment = {
 		experiment.order = parseInt(document.getElementById("order").value);
 		
 		showSlide("prestudy");
-		//experiment.training(1);			
+		experiment.training(1);			
 	},
 
 	processOneRow: function() {
@@ -238,7 +239,7 @@ var experiment = {
 		} else {
 			showSlide("mainexpt");
 		}	
-		var clickDisabled = false;
+		var clickDisabled = true;
 		experiment.task = parseInt(less) + "vs" + parseInt(more);
 
 		var x = Math.floor(Math.random()*100);
@@ -274,13 +275,13 @@ var experiment = {
 
 		if (show) {
 			$('.plate').bind('click touchstart', function(event) {		
-				$('.plate').fadeOut();
 				if(clickDisabled) return;	
 				clickDisabled = true;
 				experiment.clickTime = (new Date()).getTime();
 				var choice = $(event.currentTarget).attr('id');
 				experiment.userChoice = choice;
 				$('.cookie').fadeOut();
+				$('.plate').fadeOut();
 				//setTimeout(function() {experiment.lessVsMore(false, 1, 2, 800);}, 800);
 
 			});
@@ -291,6 +292,7 @@ var experiment = {
 				var choice = $(event.currentTarget).attr('id');
 				experiment.userChoice = choice;
 				$('.cookie').fadeOut();
+				$('.plate').fadeOut();
 				//setTimeout(function() {experiment.lessVsMore(false, 1, 2, 800);}, 800);
 			});
 		} else {
@@ -300,7 +302,7 @@ var experiment = {
 				experiment.clickTime = (new Date()).getTime();
 				var choice = $(event.currentTarget).attr('id');
 				experiment.userChoice = choice;
-				secondClass = $('#'+choice).attr('class').split(' ')[1];
+				//secondClass = $('#'+choice).attr('class').split(' ')[1];
 				$('.right').fadeOut();
 				$('.left').fadeOut();
 			});
@@ -310,7 +312,7 @@ var experiment = {
 				experiment.clickTime = (new Date()).getTime();
 				var choice = $(event.currentTarget).attr('id');
 				experiment.userChoice = choice;
-				secondClass = $('#'+choice).attr('class').split(' ')[1];
+				//secondClass = $('#'+choice).attr('class').split(' ')[1];
 				$('.right').fadeOut();
 				$('.left').fadeOut();
 			});
