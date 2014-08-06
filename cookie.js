@@ -96,9 +96,9 @@ var experiment = {
 	},
 
 	mainTrials: function() {
-		$("#transition").hide();
+		$('#preStudy').hide();
 		showSlide("mainexpt");
-		experiment.lessVsMore(false,0,1,200,3);
+		experiment.lessVsMore(false,1,2,200,3);
 	},
 
 	training: function(dotgame) {
@@ -189,14 +189,20 @@ var experiment = {
 				}, speed);				
 			})(i);
 		}
-		if (numLeft > 1) setTimeout(function() {experiment.moreRecurse(show, (numLeft - 1), direction, speed, 
+		if (numLeft > 1 && show) {
+			setTimeout(function() {experiment.moreRecurse(show, (numLeft - 1), direction, speed, 
 			left + 65, right + 65);}, (3 * speed));
+		} else if (numLeft > 1) {
+			setTimeout(function() {experiment.moreRecurse(show, (numLeft - 1), direction, speed, 
+			left, right);}, (3 * speed));
+		}
 	},
 
 	setChildren : function(show, numCookies, direction) {
 		if (show) {
 			var pile = document.createElement("img");
 			pile.setAttribute("id", "cookies");
+			pile.setAttribute("class", "cookiePile");
 			pile.src="CookiePictures/pile.png";
 			warmUp.appendChild(pile);
 			var plateL = document.createElement("img");
@@ -210,19 +216,47 @@ var experiment = {
 			plateR.src="CookiePictures/plate.png";
 			warmUp.appendChild(plateR);
 		} else {
-			var cookie = document.createElement("img");
-			cookie.setAttribute("id", "cookiePile" + parseInt(numCookies));
-			cookie.setAttribute("class", direction + "Cookie");
+			//create buckets
+			var rightTop = document.createElement("img");
+			rightTop.setAttribute("id", "rightTop");
+			rightTop.setAttribute("class", "bucketTop right");
+			rightTop.src="CookiePictures/bucketTop.png";
+			mainexpt.appendChild(rightTop);
+			var leftTop = document.createElement("img");
+			leftTop.setAttribute("id", "leftTop");
+			leftTop.setAttribute("class", "bucketTop left");
+			leftTop.src="CookiePictures/bucketTop.png";
+			mainexpt.appendChild(leftTop);
+			var rightBottom = document.createElement("img");
+			rightBottom.setAttribute("id", "rightBottom");
+			rightBottom.setAttribute("class", "bucketBottom right");
+			rightBottom.src="CookiePictures/bucketBottom.png";
+			mainexpt.appendChild(rightBottom);
+			var leftBottom = document.createElement("img");
+			leftBottom.setAttribute("id", "leftBottom");
+			leftBottom.setAttribute("class", "bucketBottom left");
+			leftBottom.src="CookiePictures/bucketBottom.png";
+			mainexpt.appendChild(leftBottom);
+
+			//create cookie pile
+			var pile = document.createElement("img");
+			pile.setAttribute("id", "cookies");
+			pile.setAttribute("class", "cookiePile");
+			pile.src="CookiePictures/pile.png";
+			mainexpt.appendChild(pile);
+			var endPile = document.createElement("img");
+			endPile.setAttribute("id", "cookiePile" + parseInt(numCookies));
+			endPile.setAttribute("class", direction + "Cookie");
 			if (numCookies == 1) {
-				cookie.src="CookiePictures/CCC.png";
+				endPile.src="CookiePictures/CCC.png";
 			} else if (numCookies == 2) {
-				cookie.src = "CookiePictures/twoCookies.png";
+				endPile.src = "CookiePictures/twoCookies.png";
 			} else if (numCookies == 3) {
-				cookie.src="CookiePictures/threeCookies.png";
+				endPile.src="CookiePictures/threeCookies.png";
 			} else if (numCookies == 4) {
-				cookie.src="CookiePictures/fourCookies";
+				endPile.src="CookiePictures/fourCookies";
 			}
-			mainexpt.appendChild(cookie);
+			mainexpt.appendChild(endPile);
 		}
 		for (var i = 0; i < numCookies; i++) {
 			//moving cookies
@@ -301,7 +335,7 @@ var experiment = {
 
 	getClickData : function(show, clickDisabled, trial) {
 		if (show) {
-			$('.plate' && '.cookie').bind('click touchstart', function(event) {		
+			$('.plate').bind('click touchstart', function(event) {		
 				if(clickDisabled) return;	
 				clickDisabled = true;
 				experiment.clickTime = (new Date()).getTime();
@@ -319,8 +353,31 @@ var experiment = {
 					experiment.mainTrials();
 				}
 			});
+			$('.cookie').bind('click touchstart', function(event) {		
+				if(clickDisabled) return;	
+				clickDisabled = true;
+				experiment.clickTime = (new Date()).getTime();
+				var choice = $(event.currentTarget).attr('id');
+				experiment.userChoice = choice;
+				$('.cookie').fadeOut(500);
+				if (trial > 1) {
+					setTimeout(function() {
+						while (warmUp.firstChild) {
+							warmUp.removeChild(warmUp.firstChild);
+						}
+						experiment.lessVsMore(true, 1, 2, 200,trial - 1);
+					}, 1000);
+				} else {
+					setTimeout(function() {
+						while (warmUp.firstChild) {
+							warmUp.removeChild(warmUp.firstChild);
+						}
+						experiment.mainTrials();
+					}, 1000);
+				}
+			});
 		} else {
-			$('.right' && '.left').bind('click touchstart', function(event) {		
+			$('.right').bind('click touchstart', function(event) {		
 				if(clickDisabled) return;
 				clickDisabled = true;	
 				experiment.clickTime = (new Date()).getTime();
@@ -330,7 +387,37 @@ var experiment = {
 				$('.right').fadeOut(500);
 				$('.left').fadeOut(500);
 				if (trial > 1) {
-					setTimeout(function() {experiment.lessVsMore(false, 1, 2, 200,trial - 1);}, 1000);
+					setTimeout(function() {
+						while (mainexpt.firstChild) {
+							mainexpt.removeChild(mainexpt.firstChild);
+						}
+						experiment.lessVsMore(false,1,2,200,trial - 1);
+					}, 1000);
+				} else {
+					setTimeout(function() {
+						while (warmUp.firstChild) {
+							warmUp.removeChild(warmUp.firstChild);
+						}
+						experiment.mainTrials();
+					}, 1000);
+				}
+			});
+			$('.left').bind('click touchstart', function(event) {		
+				if(clickDisabled) return;
+				clickDisabled = true;	
+				experiment.clickTime = (new Date()).getTime();
+				var choice = $(event.currentTarget).attr('id');
+				experiment.userChoice = choice;
+				//secondClass = $('#'+choice).attr('class').split(' ')[1];
+				$('.right').fadeOut(500);
+				$('.left').fadeOut(500);
+				if (trial > 1) {
+					setTimeout(function() {
+						while (mainexpt.firstChild) {
+							mainexpt.removeChild(mainexpt.firstChild);
+						}
+						experiment.lessVsMore(false,1,2,200,trial - 1);
+					}, 1000);
 				} else {
 					experiment.end();
 				}
@@ -339,10 +426,12 @@ var experiment = {
 	},
 
 	end: function () {
-    	setTimeout(function () {$("#mainexpt").fadeOut();}, 1000);
-    	showSlide("finish");
-    	document.body.style.background = "black";
-    }
+    	setTimeout(function () {
+    		$("#mainexpt").fadeOut();
+    		showSlide("finish");
+    		document.body.style.background = "black";
+    	}, 1000);
+    }, 
 
 }
 

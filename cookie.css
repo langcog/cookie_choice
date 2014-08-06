@@ -15,14 +15,16 @@ html, body {
 			left: 11%;
 			bottom: 23%;
 			z-index: 2;
+			width: 100px;
 		}
 		.rightCookie {
 			position: absolute;
 			right: 11%;
 			bottom: 23%;
 			z-index: 2;
+			width: 100px;
 		}
-		#cookies {
+		.cookiePile {
 			overflow: hidden;
 			position: absolute;
 			left: 35%;
@@ -30,31 +32,26 @@ html, body {
 			bottom: 50px;
 			width: 350px;
 		}
-		.bucket {
+		.bucketBottom {
 			position:absolute;
 			bottom: 100px;
-			z-index: 3
+			z-index: 3;
+			width: 250px;
 		}
 		.bucketTop {
 			position:absolute;
 			z-index: 1;
 			bottom: 322px;
+			width: 250px;
 		}
-		#rightTop {
+		.right {
 			right: 5%;
 		}
-		#leftTop {
-			left: 5%;
-		}
-		#rightB {
-			right: 5%;
-		}
-		#leftB {
+		.left {
 			left: 5%;
 		}
 		.slide {
 			display: none;
-			/*position: absolute;*/
 		}
 		#instructions {
   			text-align: center;
