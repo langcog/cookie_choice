@@ -139,7 +139,7 @@ var experiment = {
 					} else {
 						//document.body.style.background = "black";
 						setTimeout(function() {
-							experiment.preStudy();
+							showSlide("prestudy");
 						}, 500);
 					}
 				}, 1000);
@@ -350,7 +350,7 @@ var experiment = {
 						experiment.lessVsMore(true, 1, 2, 200,trial - 1);
 					}, 1000);
 				} else {
-					experiment.mainTrials();
+					showSlide("transition");
 				}
 			});
 			$('.cookie').bind('click touchstart', function(event) {		
@@ -372,7 +372,7 @@ var experiment = {
 						while (warmUp.firstChild) {
 							warmUp.removeChild(warmUp.firstChild);
 						}
-						experiment.mainTrials();
+						showSlide("transition");
 					}, 1000);
 				}
 			});
