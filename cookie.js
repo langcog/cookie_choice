@@ -54,6 +54,32 @@ createDot = function(dotx, doty, i) {
    	training.appendChild(monsterPic);
 }
 
+function play(id) {
+       var audio = document.getElementById(id);
+       audio.play();
+    }
+
+var chosenStart = [1, 2, 3, 4, 5, 6, 7, 8];
+function shuffle(array) {
+  var currentIndex = array.length
+    , temporaryValue
+    , randomIndex
+    ;
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+  return array;
+}
+var chosen = shuffle(chosenStart);
+
+var yay = new Audio("http://dev.interactive-creation-works.net/1/1.ogg");
 
 showSlide("instructions");
 
@@ -92,13 +118,13 @@ var experiment = {
 		//document.body.style.background = "black";
 		$("#prestudy").hide();
 		showSlide("warmUp");
-		experiment.lessVsMore(true,2,3,200,3);
+		experiment.runNext(true, 1);
 	},
 
 	mainTrials: function() {
 		$('#preStudy').hide();
 		showSlide("mainexpt");
-		experiment.lessVsMore(false,1,2,200,3);
+		experiment.runNext(false, 1);
 	},
 
 	training: function(dotgame) {
@@ -254,20 +280,32 @@ var experiment = {
 			} else if (numCookies == 3) {
 				endPile.src="CookiePictures/threeCookies.png";
 			} else if (numCookies == 4) {
-				endPile.src="CookiePictures/fourCookies";
+				endPile.src="CookiePictures/fourCookies.png";
 			}
 			mainexpt.appendChild(endPile);
 		}
+		var yay = document.createElement("audio");
+		yay.setAttribute("id", "yay");
+		yay.src="http://dev.interactive-creation-works.net/1/1.ogg";
+		var aw = document.createElement("audio");
+		aw.setAttribute("id", "aw");
+		aw.src="http://dev.interactive-creation-works.net/1/1.ogg";
+		
+		//moving cookies
 		for (var i = 0; i < numCookies; i++) {
-			//moving cookies
 			var cookie = document.createElement("img");
 			cookie.setAttribute("id", "cookie" + direction + parseInt(i + 1));
-			cookie.setAttribute("class", "cookie");
+			if (direction == 'left') cookie.setAttribute("class", "cookie leftCook");
+			if (direction == 'right') cookie.setAttribute("class", "cookie rightCook");
 			cookie.src="CookiePictures/CCC.png";
 			if (show) {
 				warmUp.appendChild(cookie);
+				warmUp.appendChild(yay);
+				warmUp.appendChild(aw);
 			} else {
 				mainexpt.appendChild(cookie);
+				mainexpt.appendChild(yay);
+				mainexpt.appendChild(aw);
 			}
 		}
 	},
@@ -285,12 +323,15 @@ var experiment = {
 			} else if (numCookies == 1) {
 				left = 147;
 				right = 910;
+			} else if (numCookies == 4) {
+				left = 58;
+				right = 825;
 			}
 		} else {
 			left = 147;
 			right = 910;
 		}
-		experiment.moreRecurse(show, numCookies, direction, speed, left, right);					
+		setTimeout(function() {experiment.moreRecurse(show, numCookies, direction, speed, left, right);}, 300);					
 	},
 
 	lessVsMore: function(show, less, more, speed, trial) {
@@ -313,115 +354,155 @@ var experiment = {
 			if (y < 50) {
 				experiment.moreBucket = "rightB";
 				experiment.moveCookies(show, less, 'left', speed);
-				setTimeout(function() {experiment.moveCookies(show, more, 'right', speed); experiment.getClickData(show, false, trial);}, (3 * speed * less));
+				setTimeout(function() {experiment.moveCookies(show, more, 'right', speed); experiment.getClickData(show, false, trial, 'right');}, (3 * speed * less));
 			} else {
 				experiment.moreBucket = "leftB";
 				experiment.moveCookies(show, more, 'left', speed);
-				setTimeout(function() {experiment.moveCookies(show, less, 'right', speed); experiment.getClickData(show, false, trial);}, (3 * speed * more));
+				setTimeout(function() {experiment.moveCookies(show, less, 'right', speed); experiment.getClickData(show, false, trial, 'left');}, (3 * speed * more));
 			}			
 		} else {
 			experiment.initialBucket = "rightB";
 			if (y < 50) {
 				experiment.moreBucket = "leftB";
 				experiment.moveCookies(show, less, 'right', speed);
-				setTimeout(function() {experiment.moveCookies(show, more, 'left', speed); experiment.getClickData(show, false, trial);}, (3 * speed * less));
+				setTimeout(function() {experiment.moveCookies(show, more, 'left', speed); experiment.getClickData(show, false, trial, 'left');}, (3 * speed * less));
 			} else {
 				experiment.moreBucket = "rightB";
 				experiment.moveCookies(show, more, 'right', speed);
-				setTimeout(function() {experiment.moveCookies(show, less, 'left', speed); experiment.getClickData(show, false, trial);}, (3 * speed * more));		
+				setTimeout(function() {experiment.moveCookies(show, less, 'left', speed); experiment.getClickData(show, false, trial, 'right');}, (3 * speed * more));		
 			}
 		}	
 	},
 
-	getClickData : function(show, clickDisabled, trial) {
+	getClickData : function(show, clickDisabled, trial, moreSide) {
 		if (show) {
 			$('.plate').bind('click touchstart', function(event) {		
-				if(clickDisabled) return;	
-				clickDisabled = true;
-				experiment.clickTime = (new Date()).getTime();
+				if(clickDisabled) return;
 				var choice = $(event.currentTarget).attr('id');
-				experiment.userChoice = choice;
-				$('.cookie').fadeOut(500);
-				if (trial > 1) {
-					setTimeout(function() {
-						while (warmUp.firstChild) {
-							warmUp.removeChild(warmUp.firstChild);
-						}
-						experiment.lessVsMore(true, 1, 2, 200,trial - 1);
-					}, 1000);
+				if (moreSide == 'right' && choice == 'plateRight' || moreSide == 'left' && choice == 'plateLeft') {
+					clickDisabled = true;
+					play("yay");
+					experiment.clickTime = (new Date()).getTime();
+					experiment.userChoice = choice;
+					$('.cookie').fadeOut(500);
+					if (trial < 8) {
+						setTimeout(function() {
+							while (warmUp.firstChild) {
+								warmUp.removeChild(warmUp.firstChild);
+							}
+							experiment.runNext(true, trial + 1);
+						}, 1000);
+					} else {
+						showSlide("transition");
+					}
 				} else {
-					showSlide("transition");
-				}
+					play("aw");
+				}	
 			});
 			$('.cookie').bind('click touchstart', function(event) {		
-				if(clickDisabled) return;	
-				clickDisabled = true;
-				experiment.clickTime = (new Date()).getTime();
-				var choice = $(event.currentTarget).attr('id');
-				experiment.userChoice = choice;
-				$('.cookie').fadeOut(500);
-				if (trial > 1) {
-					setTimeout(function() {
-						while (warmUp.firstChild) {
-							warmUp.removeChild(warmUp.firstChild);
-						}
-						experiment.lessVsMore(true, 1, 2, 200,trial - 1);
-					}, 1000);
+				if(clickDisabled) return;
+				var choice = $(event.currentTarget).attr('id');	
+				secondClass = $('#'+choice).attr('class').split(' ')[1];
+				if (moreSide == 'left' && secondClass == "leftCook" || moreSide == 'right' && secondClass == "rightCook") {
+					clickDisabled = true;
+					play("yay");
+					experiment.clickTime = (new Date()).getTime();
+					experiment.userChoice = choice;
+					$('.cookie').fadeOut(500);
+					if (trial < 8) {
+						setTimeout(function() {
+							while (warmUp.firstChild) {
+								warmUp.removeChild(warmUp.firstChild);
+							}
+							experiment.runNext(true, trial + 1);
+						}, 1000);
+					} else {
+						setTimeout(function() {
+							while (warmUp.firstChild) {
+								warmUp.removeChild(warmUp.firstChild);
+							}
+							showSlide("transition");
+						}, 1000);
+					}
 				} else {
-					setTimeout(function() {
-						while (warmUp.firstChild) {
-							warmUp.removeChild(warmUp.firstChild);
-						}
-						showSlide("transition");
-					}, 1000);
+					play("aw");
 				}
 			});
 		} else {
 			$('.right').bind('click touchstart', function(event) {		
 				if(clickDisabled) return;
-				clickDisabled = true;	
-				experiment.clickTime = (new Date()).getTime();
-				var choice = $(event.currentTarget).attr('id');
-				experiment.userChoice = choice;
-				//secondClass = $('#'+choice).attr('class').split(' ')[1];
-				$('.right').fadeOut(500);
-				$('.left').fadeOut(500);
-				if (trial > 1) {
-					setTimeout(function() {
-						while (mainexpt.firstChild) {
-							mainexpt.removeChild(mainexpt.firstChild);
-						}
-						experiment.lessVsMore(false,1,2,200,trial - 1);
-					}, 1000);
+				if (moreSide != 'right') {
+					//play bad noise
 				} else {
-					setTimeout(function() {
-						while (warmUp.firstChild) {
-							warmUp.removeChild(warmUp.firstChild);
-						}
-						experiment.mainTrials();
-					}, 1000);
+					clickDisabled = true;	
+					experiment.clickTime = (new Date()).getTime();
+					var choice = $(event.currentTarget).attr('id');
+					experiment.userChoice = choice;
+					$('.right').fadeOut(500);
+					$('.left').fadeOut(500);
+					if (trial < 16) {
+						setTimeout(function() {
+							while (mainexpt.firstChild) {
+								mainexpt.removeChild(mainexpt.firstChild);
+							}
+							experiment.runNext(false, trial + 1);
+							//experiment.lessVsMore(false,1,2,200,trial + 1);
+						}, 1000);
+					} else {
+						experiment.end();
+					}
 				}
 			});
 			$('.left').bind('click touchstart', function(event) {		
 				if(clickDisabled) return;
-				clickDisabled = true;	
-				experiment.clickTime = (new Date()).getTime();
-				var choice = $(event.currentTarget).attr('id');
-				experiment.userChoice = choice;
-				//secondClass = $('#'+choice).attr('class').split(' ')[1];
-				$('.right').fadeOut(500);
-				$('.left').fadeOut(500);
-				if (trial > 1) {
-					setTimeout(function() {
-						while (mainexpt.firstChild) {
-							mainexpt.removeChild(mainexpt.firstChild);
-						}
-						experiment.lessVsMore(false,1,2,200,trial - 1);
-					}, 1000);
+				if (moreSide != 'left') {
+					// play bad noise
 				} else {
-					experiment.end();
+					clickDisabled = true;	
+					experiment.clickTime = (new Date()).getTime();
+					var choice = $(event.currentTarget).attr('id');
+					experiment.userChoice = choice;
+					//secondClass = $('#'+choice).attr('class').split(' ')[1];
+					$('.right').fadeOut(500);
+					$('.left').fadeOut(500);
+					if (trial < 16) {
+						setTimeout(function() {
+							while (mainexpt.firstChild) {
+								mainexpt.removeChild(mainexpt.firstChild);
+							}
+							experiment.runNext(false, trial + 1);
+							//experiment.lessVsMore(false,1,2,200,trial + 1);
+						}, 1000);
+					} else {
+						experiment.end();
+					}
 				}
 			});
+		}
+	},
+
+	runNext : function(show, trial) {
+		var newTrial = trial;
+		if (trial > 8) {
+			newTrial = trial - 8;
+		}
+		var type = chosen[newTrial - 1];
+		if (type == 1) {
+			experiment.lessVsMore(show, 0, 1, 200, trial);
+		} else if (type == 2) {
+			experiment.lessVsMore(show, 0, 4, 200, trial);
+		} else if (type == 3) {
+			experiment.lessVsMore(show, 1, 2, 200, trial);
+		} else if (type == 4) {
+			experiment.lessVsMore(show, 1, 3, 200, trial);
+		} else if (type == 5) {
+			experiment.lessVsMore(show, 1, 4, 200, trial);
+		} else if (type == 6) {
+			experiment.lessVsMore(show, 2, 3, 200, trial);
+		} else if (type == 7) {
+			experiment.lessVsMore(show, 2, 4, 200, trial);
+		} else if (type == 8) {
+			experiment.lessVsMore(show, 3, 4, 200, trial);
 		}
 	},
 
