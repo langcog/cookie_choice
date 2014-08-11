@@ -96,8 +96,6 @@ var experiment = {
 
 	plateChoice: "",
 
-
-
 	//Experimental task variables
 	//first bucket
 	initialBucket: "",
@@ -242,7 +240,7 @@ var experiment = {
 			plateR.src="CookiePictures/plate.png";
 			warmUp.appendChild(plateR);
 		} else {
-			//create buckets
+			//create bowls
 			var rightTop = document.createElement("img");
 			rightTop.setAttribute("id", "rightTop");
 			rightTop.setAttribute("class", "bucketTop right");
@@ -293,6 +291,8 @@ var experiment = {
 			}
 			mainexpt.appendChild(endPile);
 		}
+		
+		//Audio files
 		var yay = document.createElement("audio");
 		yay.setAttribute("id", "yay");
 		yay.src="CookieSounds/yay.mp3";
@@ -357,33 +357,45 @@ var experiment = {
 		experiment.firstMove = (new Date()).getTime();
 		experiment.startTime = (new Date()).getTime() + ((less + more) * 3 * speed);
 		//Allows clicks as soon as startTime occurs
-		//setTimeout(function() {clickDisabled = false;}, (less + more) * 3 * speed);
 		if (x < 50) {
 			experiment.initialBucket = "leftB";
 			if (y < 50) {
 				experiment.moreBucket = "rightB";
 				experiment.moveCookies(show, less, 'left', speed);
-				setTimeout(function() {experiment.moveCookies(show, more, 'right', speed); experiment.getClickData(show, false, trial, 'right');}, (3 * speed * less));
+				setTimeout(function() {
+					experiment.moveCookies(show, more, 'right', speed); 
+					experiment.getClickData(show, clickDisabled, trial, 'right', more, speed);
+				}, (3 * speed * less));
 			} else {
 				experiment.moreBucket = "leftB";
 				experiment.moveCookies(show, more, 'left', speed);
-				setTimeout(function() {experiment.moveCookies(show, less, 'right', speed); experiment.getClickData(show, false, trial, 'left');}, (3 * speed * more));
+				setTimeout(function() {
+					experiment.moveCookies(show, less, 'right', speed); 
+					experiment.getClickData(show, clickDisabled, trial, 'left', less, speed);
+				}, (3 * speed * more));
 			}			
 		} else {
 			experiment.initialBucket = "rightB";
 			if (y < 50) {
 				experiment.moreBucket = "leftB";
 				experiment.moveCookies(show, less, 'right', speed);
-				setTimeout(function() {experiment.moveCookies(show, more, 'left', speed); experiment.getClickData(show, false, trial, 'left');}, (3 * speed * less));
+				setTimeout(function() {
+					experiment.moveCookies(show, more, 'left', speed); 
+					experiment.getClickData(show, clickDisabled, trial, 'left', more, speed);
+				}, (3 * speed * less));
 			} else {
 				experiment.moreBucket = "rightB";
 				experiment.moveCookies(show, more, 'right', speed);
-				setTimeout(function() {experiment.moveCookies(show, less, 'left', speed); experiment.getClickData(show, false, trial, 'right');}, (3 * speed * more));		
+				setTimeout(function() {
+					experiment.moveCookies(show, less, 'left', speed); 
+					experiment.getClickData(show, clickDisabled, trial, 'right', less, speed);
+				}, (3 * speed * more));		
 			}
 		}	
 	},
 
-	getClickData : function(show, clickDisabled, trial, moreSide) {
+	getClickData : function(show, clickDisabled, trial, moreSide, numLast, speed) {
+		setTimeout(function() {clickDisabled = false;}, ((numLast + 1) * 3 * speed));
 		if (show) {
 			$('.plate').bind('click touchstart', function(event) {		
 				if(clickDisabled) return;
