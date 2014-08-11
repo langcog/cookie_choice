@@ -59,7 +59,7 @@ function play(id) {
        audio.play();
     }
 
-var chosenStart = [1, 2, 3, 4, 5, 6, 7, 8];
+var chosenStart = [1, 2, 3, 4];
 function shuffle(array) {
   var currentIndex = array.length
     , temporaryValue
@@ -188,8 +188,8 @@ var experiment = {
 		}
 		experiment.order = parseInt(document.getElementById("order").value);
 		
-		showSlide("prestudy");
-		experiment.training(1);			
+		showSlide("transition");
+		//experiment.training(1);			
 	},
 
 	processOneRow: function() {
@@ -217,7 +217,7 @@ var experiment = {
 		}
 		if (numLeft > 1 && show) {
 			setTimeout(function() {experiment.moreRecurse(show, (numLeft - 1), direction, speed, 
-			left + 65, right + 65);}, (3 * speed));
+			left + 57, right + 57);}, (3 * speed));
 		} else if (numLeft > 1) {
 			setTimeout(function() {experiment.moreRecurse(show, (numLeft - 1), direction, speed, 
 			left, right);}, (3 * speed));
@@ -246,22 +246,22 @@ var experiment = {
 			var rightTop = document.createElement("img");
 			rightTop.setAttribute("id", "rightTop");
 			rightTop.setAttribute("class", "bucketTop right");
-			rightTop.src="CookiePictures/bucketTop.png";
+			rightTop.src="CookiePictures/bowlTop.png";
 			mainexpt.appendChild(rightTop);
 			var leftTop = document.createElement("img");
 			leftTop.setAttribute("id", "leftTop");
 			leftTop.setAttribute("class", "bucketTop left");
-			leftTop.src="CookiePictures/bucketTop.png";
+			leftTop.src="CookiePictures/bowlTop.png";
 			mainexpt.appendChild(leftTop);
 			var rightBottom = document.createElement("img");
 			rightBottom.setAttribute("id", "rightBottom");
 			rightBottom.setAttribute("class", "bucketBottom right");
-			rightBottom.src="CookiePictures/bucketBottom.png";
+			rightBottom.src="CookiePictures/bowlBottom.png";
 			mainexpt.appendChild(rightBottom);
 			var leftBottom = document.createElement("img");
 			leftBottom.setAttribute("id", "leftBottom");
 			leftBottom.setAttribute("class", "bucketBottom left");
-			leftBottom.src="CookiePictures/bucketBottom.png";
+			leftBottom.src="CookiePictures/bowlBottom.png";
 			mainexpt.appendChild(leftBottom);
 
 			//create cookie pile
@@ -273,14 +273,23 @@ var experiment = {
 			var endPile = document.createElement("img");
 			endPile.setAttribute("id", "cookiePile" + parseInt(numCookies));
 			endPile.setAttribute("class", direction + "Cookie");
+			var leftRight;
 			if (numCookies == 1) {
 				endPile.src="CookiePictures/CCC.png";
+				leftRight = direction == 'left' ? "14%" : "80%";
+				endPile.setAttribute("style", "width: 65px; left: " + leftRight);
 			} else if (numCookies == 2) {
-				endPile.src = "CookiePictures/twoCookies.png";
+				endPile.src = "CookiePictures/twoPile.png";
+				leftRight = direction == 'left' ? "11%" : "77%";
+				endPile.setAttribute("style", "left: " + leftRight);
 			} else if (numCookies == 3) {
-				endPile.src="CookiePictures/threeCookies.png";
+				endPile.src="CookiePictures/threePile.png";
+				leftRight = direction == 'left' ? "9%" : "75%";
+				endPile.setAttribute("style", "left: " + leftRight);
 			} else if (numCookies == 4) {
-				endPile.src="CookiePictures/fourCookies.png";
+				endPile.src="CookiePictures/fourPile.png";
+				leftRight = direction == 'left' ? "7%" : "72%";
+				endPile.setAttribute("style", "left: " + leftRight);
 			}
 			mainexpt.appendChild(endPile);
 		}
@@ -315,21 +324,21 @@ var experiment = {
 		var left, right;
 		if (show) {
 			if (numCookies == 3) {
-				left = 82;
-				right = 850;
+				left = 94;
+				right = 860;
 			} else if (numCookies == 2) {
-				left = 117;
-				right = 877;
+				left = 122;
+				right = 887;
 			} else if (numCookies == 1) {
-				left = 147;
-				right = 910;
+				left = 151;
+				right = 916;
 			} else if (numCookies == 4) {
-				left = 58;
-				right = 825;
+				left = 67;
+				right = 832;
 			}
 		} else {
-			left = 147;
-			right = 910;
+			left = 151;
+			right = 916;
 		}
 		setTimeout(function() {experiment.moreRecurse(show, numCookies, direction, speed, left, right);}, 300);					
 	},
@@ -483,27 +492,19 @@ var experiment = {
 
 	runNext : function(show, trial) {
 		var newTrial = trial;
-		if (trial > 8) {
-			newTrial = trial - 8;
+		while (newTrial > 4) {
+			newTrial = trial - 4;
 		}
 		var type = chosen[newTrial - 1];
 		if (type == 1) {
-			experiment.lessVsMore(show, 0, 1, 200, trial);
-		} else if (type == 2) {
-			experiment.lessVsMore(show, 0, 4, 200, trial);
-		} else if (type == 3) {
 			experiment.lessVsMore(show, 1, 2, 200, trial);
-		} else if (type == 4) {
+		} else if (type == 2) {
 			experiment.lessVsMore(show, 1, 3, 200, trial);
-		} else if (type == 5) {
+		} else if (type == 3) {
 			experiment.lessVsMore(show, 1, 4, 200, trial);
-		} else if (type == 6) {
+		} else if (type == 4) {
 			experiment.lessVsMore(show, 2, 3, 200, trial);
-		} else if (type == 7) {
-			experiment.lessVsMore(show, 2, 4, 200, trial);
-		} else if (type == 8) {
-			experiment.lessVsMore(show, 3, 4, 200, trial);
-		}
+		} 
 	},
 
 	end: function () {

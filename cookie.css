@@ -5,44 +5,40 @@ html, body {
 		.cookie {
 			overflow: hidden;
 			position: absolute;
-			left: 42%;
+			left: 47%;
 			z-index: 2;
 			top: 45%;
-			width: 75px;
+			width: 65px;
 		}
 		.leftCookie {
 			position: absolute;
-			left: 11%;
-			bottom: 23%;
+			bottom: 30%;
 			z-index: 2;
-			width: 100px;
 		}
 		.rightCookie {
 			position: absolute;
-			right: 11%;
-			bottom: 23%;
+			bottom: 30%;
 			z-index: 2;
-			width: 100px;
 		}
 		.cookiePile {
 			overflow: hidden;
 			position: absolute;
-			left: 35%;
+			left: 39%;
 			z-index: 3;
-			bottom: 50px;
-			width: 350px;
+			bottom: 12%;
+			width: 250px;
 		}
 		.bucketBottom {
 			position:absolute;
-			bottom: 100px;
+			bottom: 135px;
 			z-index: 3;
-			width: 250px;
+			width: 275px;
 		}
 		.bucketTop {
 			position:absolute;
 			z-index: 1;
-			bottom: 322px;
-			width: 250px;
+			bottom: 262px;
+			width: 275px;
 		}
 		.right {
 			right: 5%;
@@ -61,7 +57,7 @@ html, body {
 			position:absolute;
 			z-index: 1;
 			width: 250px;
-			bottom: 192px;
+			bottom: 31%;
 		}
 		#plateLeft {
 			left: 5%;
