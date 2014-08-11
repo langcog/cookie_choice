@@ -189,7 +189,7 @@ var experiment = {
 		experiment.order = parseInt(document.getElementById("order").value);
 		
 		showSlide("transition");
-		//experiment.training(1);			
+		experiment.training(1);			
 	},
 
 	processOneRow: function() {
@@ -295,10 +295,10 @@ var experiment = {
 		}
 		var yay = document.createElement("audio");
 		yay.setAttribute("id", "yay");
-		yay.src="http://dev.interactive-creation-works.net/1/1.ogg";
+		yay.src="CookieSounds/yay.mp3";
 		var aw = document.createElement("audio");
 		aw.setAttribute("id", "aw");
-		aw.src="http://dev.interactive-creation-works.net/1/1.ogg";
+		aw.src="CookieSounds/aw.mp3";
 		
 		//moving cookies
 		for (var i = 0; i < numCookies; i++) {
@@ -400,9 +400,14 @@ var experiment = {
 								warmUp.removeChild(warmUp.firstChild);
 							}
 							experiment.runNext(true, trial + 1);
-						}, 1000);
+						}, 2000);
 					} else {
-						showSlide("transition");
+						setTimeout(function() {
+							while (warmUp.firstChild) {
+								warmUp.removeChild(warmUp.firstChild);
+							}
+							showSlide("transition");
+						}, 2000);
 					}
 				} else {
 					play("aw");
@@ -424,14 +429,14 @@ var experiment = {
 								warmUp.removeChild(warmUp.firstChild);
 							}
 							experiment.runNext(true, trial + 1);
-						}, 1000);
+						}, 2000);
 					} else {
 						setTimeout(function() {
 							while (warmUp.firstChild) {
 								warmUp.removeChild(warmUp.firstChild);
 							}
 							showSlide("transition");
-						}, 1000);
+						}, 2000);
 					}
 				} else {
 					play("aw");
@@ -441,12 +446,13 @@ var experiment = {
 			$('.right').bind('click touchstart', function(event) {		
 				if(clickDisabled) return;
 				if (moreSide != 'right') {
-					//play bad noise
+					play("aw");
 				} else {
 					clickDisabled = true;	
 					experiment.clickTime = (new Date()).getTime();
 					var choice = $(event.currentTarget).attr('id');
 					experiment.userChoice = choice;
+					play("yay");
 					$('.right').fadeOut(500);
 					$('.left').fadeOut(500);
 					if (trial < 16) {
@@ -455,8 +461,7 @@ var experiment = {
 								mainexpt.removeChild(mainexpt.firstChild);
 							}
 							experiment.runNext(false, trial + 1);
-							//experiment.lessVsMore(false,1,2,200,trial + 1);
-						}, 1000);
+						}, 2000);
 					} else {
 						experiment.end();
 					}
@@ -465,13 +470,14 @@ var experiment = {
 			$('.left').bind('click touchstart', function(event) {		
 				if(clickDisabled) return;
 				if (moreSide != 'left') {
-					// play bad noise
+					play("aw");
 				} else {
 					clickDisabled = true;	
 					experiment.clickTime = (new Date()).getTime();
 					var choice = $(event.currentTarget).attr('id');
 					experiment.userChoice = choice;
 					//secondClass = $('#'+choice).attr('class').split(' ')[1];
+					play("yay");
 					$('.right').fadeOut(500);
 					$('.left').fadeOut(500);
 					if (trial < 16) {
@@ -480,8 +486,7 @@ var experiment = {
 								mainexpt.removeChild(mainexpt.firstChild);
 							}
 							experiment.runNext(false, trial + 1);
-							//experiment.lessVsMore(false,1,2,200,trial + 1);
-						}, 1000);
+						}, 2000);
 					} else {
 						experiment.end();
 					}
