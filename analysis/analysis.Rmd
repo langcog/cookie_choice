@@ -8,11 +8,50 @@ library(ggplot2)
 library(plyr)
 
 rm(list=ls())
-d <- read.csv("~/Projects/cookie_choice/cook1.csv")
+d <- read.csv("~/Projects/cookie_choice/data/cookie_linebreak_mod.csv")
 ```
 
-Compute reaction time. 
+Clean up our variables. 
 
 ```{r}
-d$rt <- (d$clickTime - d$startTime)/1000
+d$first.right <- grepl("rightB", d$first.side)
+d$more.right <- grepl("rightB", d$more.side)
+d$choice.right <- grepl("right", d$choice)
+d$correct <- d$choice.right == d$more.right
 ```
+
+Every time S clicks, it's recorded, but we only want their first click. 
+
+```{r}
+dc <- ddply(d, .(subid, trial.num), function (x) {
+  y <- x[1, ]
+  return(y)
+  })
+
+```
+
+Compute RT and examine distribution. Exclude RTs > 4s. About 10% of data.
+
+```{r}
+dc$rt <- (dc$click - dc$start)/1000
+
+qplot(rt, data=dc)
+
+qplot(log(rt), data=dc)
+
+mean(dc$rt > 4)
+dc$rt[dc$rt > 4] <- NA
+
+qplot(rt, data=dc)
+```
+
+Add ages. 
+
+Analysis start here
+-----
+
+```{r}
+
+
+```
+

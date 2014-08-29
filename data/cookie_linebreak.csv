@@ -1,4 +1,6 @@
-test,warmUp,1vs3,1,leftB,leftB,cookieleft2,1407897577339,1407897577877test,warmUp,1vs4,2,leftB,rightB,cookieright3,1407897583491,1407897584285test,warmUp,2vs3,3,leftB,leftB,cookieleft2,1407897589901,1407897591146test,warmUp,1vs2,4,rightB,rightB,cookieright1,1407897595571,1407897596672test,warmUp,1vs3,5,rightB,leftB,cookieleft2,1407897601680,1407897602421test,warmUp,1vs4,6,leftB,leftB,cookieleft3,1407897608030,1407897608999test,warmUp,2vs3,7,leftB,rightB,cookieright2,1407897614608,1407897615652test,warmUp,1vs2,8,rightB,rightB,cookieright2,1407897620061,1407897621461test,warmUp,1vs3,1,rightB,rightB,cookieleft1,1407897933627,1407897936299\ntest,warmUp,1vs3,1,rightB,rightB,cookieleft1,1407897933627,1407897937096\ntest,warmUp,1vs3,1,rightB,rightB,cookieright2,1407897933627,1407897938493
+test,warmUp,1vs3,1,leftB,leftB,cookieleft2,1407897577339,1407897577877test,warmUp,1vs4,2,leftB,rightB,cookieright3,1407897583491,1407897584285test,warmUp,2vs3,3,leftB,leftB,cookieleft2,1407897589901,1407897591146test,warmUp,1vs2,4,rightB,rightB,cookieright1,1407897595571,1407897596672test,warmUp,1vs3,5,rightB,leftB,cookieleft2,1407897601680,1407897602421test,warmUp,1vs4,6,leftB,leftB,cookieleft3,1407897608030,1407897608999test,warmUp,2vs3,7,leftB,rightB,cookieright2,1407897614608,1407897615652test,warmUp,1vs2,8,rightB,rightB,cookieright2,1407897620061,1407897621461test,warmUp,1vs3,1,rightB,rightB,cookieleft1,1407897933627,1407897936299
+test,warmUp,1vs3,1,rightB,rightB,cookieleft1,1407897933627,1407897937096
+test,warmUp,1vs3,1,rightB,rightB,cookieright2,1407897933627,1407897938493
 test,warmUp,2vs3,2,rightB,rightB,cookieright3,1407897944103,1407898820360
 test,warmUp,1vs4,3,leftB,leftB,cookieleft2,1407898825973,1407898826963
 test,warmUp,1vs2,4,leftB,leftB,cookieleft1,1407898831371,1407898833482
@@ -916,4 +918,3 @@ Sub26,test,1vs4,1,rightB,rightB,rightBottom,1409263495184,1409263509218
 Sub26,test,1vs3,2,leftB,leftB,leftBottom,1409263516730,1409263522573
 Sub26,test,1vs2,3,leftB,leftB,leftBottom,1409263529113,1409263538756
 Sub26,test,2vs3,4,rightB,leftB,leftBottom,1409263547211,1409263549830
-
