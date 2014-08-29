@@ -1,0 +1,18 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+library(plyr)
+
+rm(list=ls())
+d <- read.csv("~/Projects/cookie_choice/cook1.csv")
+```
+
+Compute reaction time. 
+
+```{r}
+d$rt <- (d$clickTime - d$startTime)/1000
+```
