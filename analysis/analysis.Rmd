@@ -4,11 +4,13 @@ output: html_document
 ---
 
 ```{r}
+setwd("~/Projects/cookie_choice/")
+
 library(ggplot2)
 library(plyr)
 
 rm(list=ls())
-d <- read.csv("~/Projects/cookie_choice/data/cookie_linebreak_mod.csv")
+d <- read.csv("data/cookie_linebreak_mod.csv")
 ```
 
 Clean up our variables. 
@@ -40,6 +42,7 @@ qplot(rt, data=dc)
 qplot(log(rt), data=dc)
 
 mean(dc$rt > 4)
+dc$correct[dc$rt > 4] <- NA
 dc$rt[dc$rt > 4] <- NA
 
 qplot(rt, data=dc)
@@ -47,11 +50,57 @@ qplot(rt, data=dc)
 
 Add ages. 
 
+```{r}
+demo <- read.csv("data/subAges.csv")
+demo$age <- demo$age.mo / 12
+dc <- merge(dc, demo)
+
+qplot(age, data=demo)
+```
+
+
 Analysis start here
 -----
 
-```{r}
+Median split by age, test and warmup. 
 
+```{r}
+dc$older <- dc$age > median(demo$age)
+ 
+ms <- ddply(dc, .(older, comparison), summarize, 
+            mean.correct = mean(correct, na.rm=TRUE))
+
+qplot(comparison, mean.correct, fill=older,
+      geom="bar", stat="identity",
+      position="dodge",
+      data=ms)
 
 ```
 
+
+Now break down for warmup and test. 
+
+```{r}
+ms <- ddply(dc, .(trial.type, comparison, older), summarize, 
+            mean.correct = mean(correct, na.rm=TRUE), 
+            num.trials = length(correct[!is.na(correct)]))
+
+qplot(comparison, mean.correct, fill=older,
+      geom="bar", stat="identity",
+      facets=.~trial.type, 
+      position="dodge",
+      data=ms)
+
+```
+
+
+Drop-out analysis.
+
+```{r}
+mss <- ddply(dc, .(subid, age, older), summarise, 
+             n.trials = length(trial.num))
+
+qplot(n.trials, facets=.~older, 
+     data=mss)
+
+```
