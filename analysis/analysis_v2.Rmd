@@ -8,7 +8,7 @@ library(ggplot2)
 library(plyr)
 
 rm(list=ls())
-d <- read.csv("~/Documents/cookie_choice/data/cookie_linebreak_v2_mod.csv")
+d <- read.csv("~/Projects/cookie_choice/data/cookie_linebreak_v2_mod.csv")
 ```
 
 Clean up our variables. 
@@ -49,7 +49,7 @@ qplot(rt, data=dc)
 Add ages. 
 
 ```{r}
-demo <- read.csv("data/subAges.csv")
+demo <- read.csv("~/Projects/cookie_choice/data/subAges_v2.csv")
 demo$age <- demo$age.mo / 12
 dc <- merge(dc, demo)
 
@@ -59,6 +59,22 @@ qplot(age, data=demo)
 
 Analysis start here
 -----
+
+Scatter plot by kids:
+
+```{r}
+ms <- ddply(dc, .(subid,age), summarize, 
+            mean.correct = mean(correct, na.rm=TRUE),
+            n.trials = length(correct[!is.na(correct)]))
+
+qplot(age, mean.correct, label=subid,
+      size=n.trials,
+      stat="identity",
+      geom=c("text"),
+      position="dodge",
+      data=ms) + geom_hline(yintercept=.5,lty=2) + ylim(c(0,1))
+
+```
 
 Median split by age, test and warmup. 
 
@@ -76,6 +92,9 @@ qplot(comparison, mean.correct, fill=older,
 ```
 
 
+
+
+
 Now break down for warmup and test. 
 
 ```{r}
@@ -89,7 +108,31 @@ qplot(comparison, mean.correct, fill=older,
       position="dodge",
       data=ms)
 
+print(ms)
+
 ```
+
+Averaging across ages:
+
+
+Now break down for warmup and test. 
+
+```{r}
+ms <- ddply(dc, .(trial.type, comparison), summarize, 
+            mean.correct = mean(correct, na.rm=TRUE), 
+            num.trials = length(correct[!is.na(correct)]))
+
+qplot(comparison, mean.correct, 
+      geom="bar", stat="identity",
+      facets=.~trial.type, 
+      position="dodge",
+      data=ms)
+
+print(ms)
+
+```
+
+
 
 
 Drop-out analysis.
