@@ -27,8 +27,8 @@ createDot = function(dotx, doty, i) {
 	monsterPic.id = "monster" + parseInt(i + 1);
 	monsterPic.src="CookiePictures/monster.png";
 
-    var x = Math.floor(Math.random()*950);
-    var y = Math.floor(Math.random()*540);
+    var x = Math.floor(Math.random()*900);
+    var y = Math.floor(Math.random()*500);
 
     var invalid = "true";
 
@@ -78,6 +78,8 @@ function shuffle(array) {
   return array;
 }
 var chosen = shuffle(chosenStart);
+var warmUpData = [];
+var mainData = [];
 
 var yay = new Audio("http://dev.interactive-creation-works.net/1/1.ogg");
 
@@ -87,30 +89,22 @@ var experiment = {
 	
 	subid: "",
 
-	task: "",
+	trialType: "",
 
-	//Warm up variables
-	initialPlate: "",
+	comparison: "",
 
-	morePlate: "",
+	trialNum: 0,
 
-	plateChoice: "",
+	firstSide: "",
 
-	//Experimental task variables
-	//first bucket
-	initialBucket: "",
-
-	moreBucket: "",
+	moreSide: "",
 
 	userChoice: "",
-	//Beginning of animation
-	firstMove: 0,
+
 	//Starts as soon as animation ends, which is right when click is enabled
 	startTime: 0,
 	//Time when object is clicked
 	clickTime: 0,
-
-	reactionTime: 0,
 
 	preStudy: function() {
 		//document.body.style.background = "black";
@@ -184,26 +178,18 @@ var experiment = {
 			$("#checkMessage").html('<font color="red">For list, you must choose either a 1 or 2</font>');
 			return;
 		}
-		experiment.order = parseInt(document.getElementById("order").value);
 		
 		showSlide("transition");
-		experiment.training(1);			
-	},
-
-	processOneRow: function() {
-		var dataforRound = experiment.subid; 
-		dataforRound += "," + experiment.task + "," + experiment.initialBucket + "," + experiment.moreBucket + "," + experiment.userChoice;
-		dataforRound += "," + experiment.firstMove + "," + experiment.startTime + "," + experiment.clickTime;
-		$.post("http://langcog.stanford.edu/cgi-bin/Cookie/cookie.php", {postresult_string : dataforRound});	
+		//experiment.training(1);			
 	},
 
 	moreRecurse: function(show, numLeft, direction, speed, left, right) {
 		var moveAwayPercent = direction == 'left' ? parseInt(left) + 'px' : parseInt(right) + 'px';
 		for (var i = 0; i < 1; i++) {
 			(function(index) {
-				$('#cookie' + direction + parseInt(numLeft)).animate({'top': '10%'}, {duration: speed}, speed);
+				$('#cookie' + direction + parseInt(numLeft)).animate({'top': '80px'}, {duration: speed}, speed);
 				$('#cookie' + direction + parseInt(numLeft)).animate({'left': moveAwayPercent}, {duration: speed}, speed);				
-				$('#cookie' + direction + parseInt(numLeft)).animate({'top': '53%'}, {duration: speed,
+				$('#cookie' + direction + parseInt(numLeft)).animate({'top': '345px'}, {duration: speed,
 					complete: function() {
 						// We don't want the cookie to reappear on the last animation
 						if (!show) {
@@ -224,11 +210,6 @@ var experiment = {
 
 	setChildren : function(show, numCookies, direction) {
 		if (show) {
-			var pile = document.createElement("img");
-			pile.setAttribute("id", "cookies");
-			pile.setAttribute("class", "cookiePile");
-			pile.src="CookiePictures/pile.png";
-			warmUp.appendChild(pile);
 			var plateL = document.createElement("img");
 			plateL.setAttribute("id", "plateLeft");
 			plateL.setAttribute("class", "plate");
@@ -262,12 +243,7 @@ var experiment = {
 			leftBottom.src="CookiePictures/bowlBottom.png";
 			mainexpt.appendChild(leftBottom);
 
-			//create cookie pile
-			var pile = document.createElement("img");
-			pile.setAttribute("id", "cookies");
-			pile.setAttribute("class", "cookiePile");
-			pile.src="CookiePictures/pile.png";
-			mainexpt.appendChild(pile);
+			//piles shown after bowls fade
 			var endPile = document.createElement("img");
 			endPile.setAttribute("id", "cookiePile" + parseInt(numCookies));
 			endPile.setAttribute("class", direction + "Cookie");
@@ -299,6 +275,11 @@ var experiment = {
 		var aw = document.createElement("audio");
 		aw.setAttribute("id", "aw");
 		aw.src="CookieSounds/aw.mp3";
+
+		var pile = document.createElement("img");
+		pile.setAttribute("id", "cookies");
+		pile.setAttribute("class", "cookiePile");
+		pile.src="CookiePictures/pile.png";
 		
 		//moving cookies
 		for (var i = 0; i < numCookies; i++) {
@@ -311,10 +292,12 @@ var experiment = {
 				warmUp.appendChild(cookie);
 				warmUp.appendChild(yay);
 				warmUp.appendChild(aw);
+				warmUp.appendChild(pile);
 			} else {
 				mainexpt.appendChild(cookie);
 				mainexpt.appendChild(yay);
 				mainexpt.appendChild(aw);
+				mainexpt.appendChild(pile);
 			}
 		}
 	},
@@ -324,21 +307,21 @@ var experiment = {
 		var left, right;
 		if (show) {
 			if (numCookies == 3) {
-				left = 94;
-				right = 860;
+				left = 50;
+				right = 300;
 			} else if (numCookies == 2) {
-				left = 122;
-				right = 887;
+				left = 55;
+				right = 305;
 			} else if (numCookies == 1) {
-				left = 151;
-				right = 916;
+				left = 60;
+				right = 310;
 			} else if (numCookies == 4) {
-				left = 67;
-				right = 832;
+				left = 45;
+				right = 295;
 			}
 		} else {
-			left = 151;
-			right = 916;
+			left = 60;
+			right = 310;
 		}
 		setTimeout(function() {experiment.moreRecurse(show, numCookies, direction, speed, left, right);}, 300);					
 	},
@@ -350,24 +333,29 @@ var experiment = {
 			showSlide("mainexpt");
 		}	
 		var clickDisabled = true;
-		experiment.task = parseInt(less) + "vs" + parseInt(more);
+		experiment.comparison = parseInt(less) + "vs" + parseInt(more);
+		if(show) {
+			experiment.trialType = "warmUp";
+		} else {
+			experiment.trialType = "test";
+		}
+		experiment.trialNum = trial;
 
 		var x = Math.floor(Math.random()*100);
 		var y = Math.floor(Math.random()*100);
-		experiment.firstMove = (new Date()).getTime();
-		experiment.startTime = (new Date()).getTime() + ((less + more) * 3 * speed);
-		//Allows clicks as soon as startTime occurs
+		// experiment.firstMove = (new Date()).getTime();
+		// experiment.startTime = (new Date()).getTime() + ((less + more) * 3 * speed);
 		if (x < 50) {
-			experiment.initialBucket = "leftB";
+			experiment.firstSide = "leftB";
 			if (y < 50) {
-				experiment.moreBucket = "rightB";
+				experiment.moreSide = "rightB";
 				experiment.moveCookies(show, less, 'left', speed);
 				setTimeout(function() {
 					experiment.moveCookies(show, more, 'right', speed); 
 					experiment.getClickData(show, clickDisabled, trial, 'right', more, speed);
 				}, (3 * speed * less));
 			} else {
-				experiment.moreBucket = "leftB";
+				experiment.moreSide = "leftB";
 				experiment.moveCookies(show, more, 'left', speed);
 				setTimeout(function() {
 					experiment.moveCookies(show, less, 'right', speed); 
@@ -375,16 +363,16 @@ var experiment = {
 				}, (3 * speed * more));
 			}			
 		} else {
-			experiment.initialBucket = "rightB";
+			experiment.firstSide = "rightB";
 			if (y < 50) {
-				experiment.moreBucket = "leftB";
+				experiment.moreSide = "leftB";
 				experiment.moveCookies(show, less, 'right', speed);
 				setTimeout(function() {
 					experiment.moveCookies(show, more, 'left', speed); 
 					experiment.getClickData(show, clickDisabled, trial, 'left', more, speed);
 				}, (3 * speed * less));
 			} else {
-				experiment.moreBucket = "rightB";
+				experiment.moreSide = "rightB";
 				experiment.moveCookies(show, more, 'right', speed);
 				setTimeout(function() {
 					experiment.moveCookies(show, less, 'left', speed); 
@@ -394,40 +382,43 @@ var experiment = {
 		}	
 	},
 
+	//Records userChoice, startTime, and clickTime
 	getClickData : function(show, clickDisabled, trial, moreSide, numLast, speed) {
-		setTimeout(function() {clickDisabled = false;}, ((numLast + 1) * 3 * speed));
+		setTimeout(function() {
+			clickDisabled = false; 
+			experiment.startTime = (new Date()).getTime();;
+		}, ((numLast + 1) * 3 * speed));
 		if (show) {
 			$('.plate').bind('click touchstart', function(event) {		
 				if(clickDisabled) return;
 				var choice = $(event.currentTarget).attr('id');
+				experiment.userChoice = choice;
+				experiment.clickTime = (new Date()).getTime();
+				experiment.processOneRow();				
 				if (moreSide == 'right' && choice == 'plateRight' || moreSide == 'left' && choice == 'plateLeft') {
 					clickDisabled = true;
 					play("yay");
-					experiment.clickTime = (new Date()).getTime();
-					experiment.userChoice = choice;
 					$('.cookie').fadeOut(500);
-					if (trial < 8) {
-						setTimeout(function() {
-							while (warmUp.firstChild) {
-								warmUp.removeChild(warmUp.firstChild);
-							}
+					setTimeout(function() {
+						while(warmUp.firstChild) {
+							warmUp.removeChild(warmUp.firstChild);
+						}
+						if (trial < 8) {
 							experiment.runNext(true, trial + 1);
-						}, 2000);
-					} else {
-						setTimeout(function() {
-							while (warmUp.firstChild) {
-								warmUp.removeChild(warmUp.firstChild);
-							}
+						} else {
 							showSlide("transition");
-						}, 2000);
-					}
+						}
+					}, 2000);
 				} else {
 					play("aw");
 				}	
 			});
 			$('.cookie').bind('click touchstart', function(event) {		
 				if(clickDisabled) return;
-				var choice = $(event.currentTarget).attr('id');	
+				var choice = $(event.currentTarget).attr('id');
+				experiment.userChoice = choice;
+				experiment.clickTime = (new Date()).getTime();
+				experiment.processOneRow();
 				secondClass = $('#'+choice).attr('class').split(' ')[1];
 				if (moreSide == 'left' && secondClass == "leftCook" || moreSide == 'right' && secondClass == "rightCook") {
 					clickDisabled = true;
@@ -435,21 +426,16 @@ var experiment = {
 					experiment.clickTime = (new Date()).getTime();
 					experiment.userChoice = choice;
 					$('.cookie').fadeOut(500);
-					if (trial < 8) {
-						setTimeout(function() {
-							while (warmUp.firstChild) {
-								warmUp.removeChild(warmUp.firstChild);
-							}
+					setTimeout(function() {
+						while(warmUp.firstChild) {
+							warmUp.removeChild(warmUp.firstChild);
+						}
+						if (trial < 8) {
 							experiment.runNext(true, trial + 1);
-						}, 2000);
-					} else {
-						setTimeout(function() {
-							while (warmUp.firstChild) {
-								warmUp.removeChild(warmUp.firstChild);
-							}
+						} else {
 							showSlide("transition");
-						}, 2000);
-					}
+						}
+					}, 2000);
 				} else {
 					play("aw");
 				}
@@ -510,7 +496,7 @@ var experiment = {
 	runNext : function(show, trial) {
 		var newTrial = trial;
 		while (newTrial > 4) {
-			newTrial = trial - 4;
+			newTrial -= 4;
 		}
 		var type = chosen[newTrial - 1];
 		if (type == 1) {
@@ -523,6 +509,15 @@ var experiment = {
 			experiment.lessVsMore(show, 2, 3, 200, trial);
 		} 
 	},
+
+	processOneRow: function() {
+		var dataForTrial = experiment.subid; 
+		dataForTrial += "," + experiment.trialType + "," + experiment.comparison + "," + experiment.trialNum; 
+		dataForTrial += "," + experiment.firstSide + "," + experiment.moreSide + "," + experiment.userChoice;
+		dataForTrial += "," + experiment.startTime + "," + experiment.clickTime + "<br>";
+		$.post("http://langcog.stanford.edu/cgi-bin/Cookie/cookie.php", {postresult_string : dataForTrial});	
+	},
+
 
 	end: function () {
     	setTimeout(function () {

@@ -5,28 +5,28 @@ html, body {
 		.cookie {
 			overflow: hidden;
 			position: absolute;
-			left: 47%;
 			z-index: 2;
-			top: 45%;
+			left: 225px;
+			top: 330px;
 			width: 65px;
 		}
 		.leftCookie {
 			position: absolute;
-			bottom: 30%;
+			top: 390px;
 			z-index: 2;
 		}
 		.rightCookie {
 			position: absolute;
-			bottom: 30%;
+			top: 390px;
 			z-index: 2;
 		}
 		.cookiePile {
 			overflow: hidden;
 			position: absolute;
-			left: 39%;
+			left: 140px;
 			z-index: 3;
-			bottom: 12%;
-			width: 250px;
+			top: 285px;
+			width: 50px;
 		}
 		.bucketBottom {
 			position:absolute;
@@ -41,10 +41,10 @@ html, body {
 			width: 275px;
 		}
 		.right {
-			right: 5%;
+			left: 525px;
 		}
 		.left {
-			left: 5%;
+			left: 58px;
 		}
 		.slide {
 			display: none;
@@ -57,12 +57,12 @@ html, body {
 			position:absolute;
 			z-index: 1;
 			width: 250px;
-			bottom: 31%;
+			top: 330px;
 		}
 		#plateLeft {
-			left: 5%;
+			left: 58px;
 		}
 		#plateRight {
-			right: 5%;
+			left: 525px;
 		}
 		
